@@ -5,11 +5,13 @@
 class PointSet
 {
     /**
+     * List of points.
      * @var string[]
      */
     private $points;
 
     /**
+     * Relation between points (list of connnected points for each point).
      * @var string[][]
      */
     private $pointsRelation;
@@ -46,7 +48,6 @@ class PointSet
     private $countPath;
     private $currentPath;
     private $passedPoints;
-    private $passedEdges;
 
     public function findRoute($pointName)
     {
@@ -54,7 +55,6 @@ class PointSet
         $this->countPath = 0;
         $this->currentPath = [];
         $this->passedPoints = [];
-        $this->passedEdges = [];
         $this->findRouteFrom($pointName, 1);
     }
 
@@ -70,25 +70,16 @@ class PointSet
                     $this->routeFound();
                 }
             } else { // Go to next point.
-                $edgeName = $this->edgeName($point, $nextPoint);
-                if (!isset($this->passedPoints[$nextPoint]) // Not passed this point.
-                        && !isset($this->passedEdges[$edgeName])) {
+                if (!isset($this->passedPoints[$nextPoint])) { // Not passed this point.
                     $this->passedPoints[$nextPoint] = true;
-                    $this->passedEdges[$edgeName] = true;
 
                     $this->findRouteFrom($nextPoint, $level + 1);
 
                     unset($this->passedPoints[$nextPoint]);
-                    unset($this->passedEdges[$edgeName]);
                 }
             }
         }
         unset($this->passedPoints[$point]);
-    }
-
-    private function edgeName($point1, $point2)
-    {
-        return $point1 < $point2 ? "{$point1}{$point2}" : "{$point2}{$point1}";
     }
 
     private function routeFound()
